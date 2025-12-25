@@ -28,13 +28,22 @@ This command runs a full improvement cycle: explore → plan → implement → r
 ls -la .claude/logs/signals/ 2>/dev/null | grep -v "^d" | grep -v ".gitkeep"
 ```
 
-### 1.2 Session Logs
+### 1.2 Session & Native Logs
 ```bash
 # Enhanced session logs (from session-logger hook)
 ls -lt .claude/logs/sessions/ 2>/dev/null | head -10
 
-# For deeper analysis, run:
-# /project:analyze-logs week all
+# Native Claude logs (rich data: tool calls, errors, token usage)
+CLAUDE_LOG_DIR="$HOME/.claude/projects$(pwd)"
+if [ -d "$CLAUDE_LOG_DIR" ]; then
+  echo "Native logs available:"
+  ls -lt "$CLAUDE_LOG_DIR"/*.jsonl 2>/dev/null | head -3
+fi
+```
+
+For comprehensive pattern analysis across sessions:
+```
+/project:analyze-logs week all
 ```
 
 ### 1.3 Serena Memories

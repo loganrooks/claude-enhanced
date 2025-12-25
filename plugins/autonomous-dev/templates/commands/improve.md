@@ -119,7 +119,16 @@ This provides:
 
 ### 2.3 For Each Pattern Found
 
-Run `/project:diagnose <pattern>` to:
+**PARALLELIZATION**: If multiple signals/patterns found, diagnose them in parallel:
+
+```
+# Parallel diagnosis (single message, multiple Task calls)
+Task(subagent_type="root-cause-analyst", model="sonnet", prompt="Diagnose signal: [pattern-1-description]")
+Task(subagent_type="root-cause-analyst", model="sonnet", prompt="Diagnose signal: [pattern-2-description]")
+Task(subagent_type="root-cause-analyst", model="sonnet", prompt="Diagnose signal: [pattern-3-description]")
+```
+
+For each pattern (sequential if few, parallel if many):
 1. Trace to root cause
 2. Identify system component
 3. Propose improvement type
@@ -162,7 +171,15 @@ Priority Levels:
 
 ### 3.3 Improvement Self-Review
 
-Launch improvement-reviewer for each proposal:
+**PARALLELIZATION**: Review multiple proposals in parallel if independent:
+
+```
+# Parallel improvement review (single message, multiple Task calls)
+Task(subagent_type="general-purpose", model="sonnet", prompt="Review improvement proposal: [proposal-1]. Check: addresses root cause? proportionate? unintended consequences? bloat?")
+Task(subagent_type="general-purpose", model="sonnet", prompt="Review improvement proposal: [proposal-2]. Check: addresses root cause? proportionate? unintended consequences? bloat?")
+```
+
+For each proposal, validate:
 - Does improvement address root cause?
 - Is it proportionate to the problem?
 - Any unintended consequences?

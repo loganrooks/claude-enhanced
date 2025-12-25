@@ -1,12 +1,25 @@
 ---
 description: Analyze session logs for self-improvement patterns
-allowed-tools: Read, Glob, Grep, Bash, mcp__serena__*, mcp__sequential-thinking__*
+allowed-tools: Read, Glob, Grep, Bash, Task, mcp__serena__*, mcp__sequential-thinking__*
 argument-hint: [scope: session|week|month|all] [focus: errors|patterns|metrics|all]
 ---
 
 # Analyze Logs: $ARGUMENTS
 
 Systematic analysis of session logs to identify improvement opportunities.
+
+## Parallelization Strategy
+
+For comprehensive analysis, spawn parallel agents to analyze different data sources:
+
+```
+# Parallel log analysis (single message, multiple Task calls)
+Task(subagent_type="Explore", model="sonnet", prompt="Analyze .claude/logs/signals/ for error patterns and frequency")
+Task(subagent_type="Explore", model="sonnet", prompt="Analyze git log for fix/revert patterns and hotspot files")
+Task(subagent_type="Explore", model="sonnet", prompt="Analyze native Claude logs at ~/.claude/projects/ for tool failures")
+```
+
+After parallel analysis completes, synthesize findings into unified report.
 
 ## Phase 1: Gather Log Data
 

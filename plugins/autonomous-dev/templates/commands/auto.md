@@ -42,9 +42,20 @@ Once approved, proceed automatically through remaining phases.
 
 ---
 
-## Phase 1: Exploration (AUTO)
+## Phase 1: Exploration (AUTO + PARALLEL)
 
 ### 1.1 Codebase Investigation
+
+**PARALLELIZATION**: For large features touching multiple areas, spawn parallel exploration agents:
+
+```
+# Parallel exploration example (use Task tool with multiple invocations in single message)
+Task(subagent_type="Explore", prompt="Explore frontend components related to $ARGUMENTS")
+Task(subagent_type="Explore", prompt="Explore backend/API related to $ARGUMENTS")
+Task(subagent_type="Explore", prompt="Explore test patterns for similar features")
+```
+
+For simpler features, sequential exploration is fine:
 - Search for relevant files and patterns
 - Map dependencies and interactions
 - Identify existing conventions
@@ -107,38 +118,43 @@ Review the implementation for $ARGUMENTS:
 
 ---
 
-## Phase 4: Documentation (AUTO)
+## Phase 4: Documentation & Validation (AUTO + PARALLEL)
 
-### 4.1 Update Documentation
+**PARALLELIZATION**: Run documentation, testing, and linting in parallel since they're independent:
+
+```
+# Parallel validation (single message, multiple Task calls)
+Task(subagent_type="general-purpose", model="sonnet", prompt="Update documentation for $ARGUMENTS: docstrings, README if needed, CLAUDE.md if patterns changed")
+Task(subagent_type="quality-engineer", model="sonnet", prompt="Run full test suite and lint checks for the project, report any failures")
+```
+
+### 4.1 Update Documentation (can run in parallel with 4.2)
 - Update/create docstrings
 - Update README if needed
 - Update CLAUDE.md if patterns changed
 
-### 4.2 Self-Review: Documentation
+### 4.2 Validation Suite (can run in parallel with 4.1)
+- Run full test suite
+- Run lint check
+- Run type checker if applicable
+
+### 4.3 Self-Review: Documentation
 Launch documentation-reviewer agent:
 ```
 Review documentation updates for $ARGUMENTS:
 [Include doc changes]
 ```
 
-**GATE 4**: If verdict is APPROVED → continue. If NEEDS_IMPROVEMENT → revise and re-review.
+**GATE 4**: Both documentation review APPROVED and all validation checks pass. If any fail → fix and re-validate.
 
 ---
 
-## Phase 5: Final Validation (AUTO)
+## Phase 5: Integration Verification (AUTO)
 
-### 5.1 Full Test Suite
-Run the project's test command (e.g., `npm test`, `pytest`, `cargo test`).
-
-### 5.2 Lint Check
-Run the project's lint command if configured.
-
-### 5.3 Type Check (if applicable)
-Run the project's type checker if configured.
-
-### 5.4 Integration Verification
+### 5.1 Integration Check
 - Verify no regressions
 - Check for unintended side effects
+- Confirm all changes work together
 
 **GATE 5**: All checks must pass. If any fail → fix and re-run.
 

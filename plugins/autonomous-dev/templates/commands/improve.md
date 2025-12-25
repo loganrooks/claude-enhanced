@@ -28,7 +28,21 @@ This command runs a full improvement cycle: explore → plan → implement → r
 ls -la .claude/logs/signals/ 2>/dev/null | grep -v "^d" | grep -v ".gitkeep"
 ```
 
-### 1.2 Session & Native Logs
+### 1.2 Human Correction Signals
+```bash
+# Corrections captured via /project:signal
+if [ -f .claude/signals/corrections.jsonl ]; then
+  echo "=== Human Corrections ==="
+  cat .claude/signals/corrections.jsonl
+  echo ""
+  echo "Count: $(wc -l < .claude/signals/corrections.jsonl) signals"
+fi
+```
+
+These are high-value signals - moments when the user interrupted or corrected Claude.
+Correlate timestamps with native Claude logs to understand what was happening.
+
+### 1.3 Session & Native Logs
 ```bash
 # Enhanced session logs (from session-logger hook)
 ls -lt .claude/logs/sessions/ 2>/dev/null | head -10
@@ -46,14 +60,14 @@ For comprehensive pattern analysis across sessions:
 /project:analyze-logs week all
 ```
 
-### 1.3 Serena Memories
+### 1.4 Serena Memories
 ```
 list_memories()
 read_memory("improvement_log")  # Previous improvements
 read_memory("decision_log")     # Decisions that may need review
 ```
 
-### 1.4 Git History (Error Indicators)
+### 1.5 Git History (Error Indicators)
 ```bash
 # Commits indicating issues
 git log --oneline -20 | grep -iE "fix|bug|revert|oops|typo"
@@ -62,7 +76,7 @@ git log --oneline -20 | grep -iE "fix|bug|revert|oops|typo"
 git log --oneline --name-only -50 | grep -v "^[a-f0-9]" | sort | uniq -c | sort -rn | head -10
 ```
 
-### 1.5 System Health Check
+### 1.6 System Health Check
 ```bash
 # CLAUDE.md length (should be < 500 lines)
 wc -l CLAUDE.md
@@ -77,7 +91,7 @@ ls .claude/hooks/ | wc -l
 ls .claude/commands/ | wc -l
 ```
 
-### 1.6 Self-Critique by Domain
+### 1.7 Self-Critique by Domain
 
 For each domain, run the relevant reviewer to identify issues:
 
@@ -97,12 +111,16 @@ For each domain, run the relevant reviewer to identify issues:
 
 | Category | Signals | Root Cause Area |
 |----------|---------|-----------------|
+| Human Corrections | `/project:signal` entries | Missing pattern/rule/reminder |
 | Repeated Errors | Same issue 2+ times | Missing command step or agent |
 | Human Interruptions | "You should have..." | Missing reminder/hook |
 | Context Loss | Re-explanation needed | Memory/docs gap |
 | Workflow Friction | Manual multi-step | Missing command |
 | Rule Ignored | Documented but not followed | CLAUDE.md bloat or missing hook |
 | Technical Debt | TODO accumulation | Missing quality gate |
+
+**Human Corrections Priority**: Signals from `/project:signal` are highest priority.
+These are explicit user feedback moments. Correlate with native logs by timestamp.
 
 ### 2.2 Deep Pattern Analysis
 
@@ -264,10 +282,17 @@ write_memory("improvement_log", """
 
 ### 5.3 Archive Processed Signals
 
-Move processed signals to signals/processed/:
+Move processed signals to archived locations:
 ```bash
+# Archive markdown signals
 mkdir -p .claude/logs/signals/processed
 mv .claude/logs/signals/*.md .claude/logs/signals/processed/ 2>/dev/null
+
+# Archive human corrections (rename with date suffix)
+if [ -f .claude/signals/corrections.jsonl ]; then
+  mkdir -p .claude/signals/processed
+  mv .claude/signals/corrections.jsonl ".claude/signals/processed/corrections_$(date +%Y%m%d).jsonl"
+fi
 ```
 
 ---

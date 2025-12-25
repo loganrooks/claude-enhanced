@@ -148,12 +148,20 @@ The system follows its own explore → plan → implement → review cycle:
 **Commands:**
 - `/project:improve [trigger]` - Full improvement cycle
 - `/project:diagnose <signal>` - Root cause analysis
+- `/project:analyze-logs [scope]` - Pattern analysis across sessions
 
 **Triggers:**
 - `pr-merge` — After PR merged
 - `error` — After significant error
 - `weekly` — Weekly maintenance
 - `context-loss` — After re-explanation needed
+
+**Data Sources:**
+| Source | Location | Content |
+|--------|----------|---------|
+| Session logs | `.claude/logs/sessions/` | Metrics, git state, issues |
+| Signals | `.claude/logs/signals/` | Auto-detected issues |
+| Native logs | `~/.claude/projects/` | Full tool calls, tokens |
 
 **System Health Limits:**
 - CLAUDE.md: < 500 lines

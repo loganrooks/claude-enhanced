@@ -30,7 +30,11 @@ ls -la .claude/logs/signals/ 2>/dev/null | grep -v "^d" | grep -v ".gitkeep"
 
 ### 1.2 Session Logs
 ```bash
-ls -lt .claude/logs/ | head -10
+# Enhanced session logs (from session-logger hook)
+ls -lt .claude/logs/sessions/ 2>/dev/null | head -10
+
+# For deeper analysis, run:
+# /project:analyze-logs week all
 ```
 
 ### 1.3 Serena Memories
@@ -91,7 +95,20 @@ For each domain, run the relevant reviewer to identify issues:
 | Rule Ignored | Documented but not followed | CLAUDE.md bloat or missing hook |
 | Technical Debt | TODO accumulation | Missing quality gate |
 
-### 2.2 For Each Pattern Found
+### 2.2 Deep Pattern Analysis
+
+For comprehensive pattern analysis across multiple sessions:
+```
+/project:analyze-logs week all
+```
+
+This provides:
+- Aggregated error/warning frequency
+- Git hotspot analysis
+- Metric trends
+- Prioritized improvement recommendations
+
+### 2.3 For Each Pattern Found
 
 Run `/project:diagnose <pattern>` to:
 1. Trace to root cause
@@ -99,7 +116,7 @@ Run `/project:diagnose <pattern>` to:
 3. Propose improvement type
 4. Self-review the diagnosis
 
-### 2.3 Diagnosis Self-Review
+### 2.4 Diagnosis Self-Review
 
 Launch diagnostic-agent (or self-review):
 - Is root cause analysis sound?

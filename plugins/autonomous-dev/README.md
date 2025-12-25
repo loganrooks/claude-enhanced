@@ -27,6 +27,7 @@ This plugin implements:
 | `/project:document <target>` | Documentation generation |
 | `/project:improve [trigger]` | Self-improvement cycle |
 | `/project:diagnose <signal>` | Root cause analysis |
+| `/project:analyze-logs [scope]` | Pattern analysis for self-improvement |
 | `/project:resume` | Restore session context |
 | `/project:checkpoint <note>` | Save session state |
 
@@ -105,6 +106,39 @@ Error/Interruption/Friction
                               ▼
               Better commands, agents, hooks, docs
 ```
+
+## Enhanced Logging & Analysis
+
+### Data Capture
+
+The `session-logger` hook captures rich session data automatically:
+
+| Data Type | Location | Purpose |
+|-----------|----------|---------|
+| Session metrics | `.claude/logs/sessions/` | Files, commits, errors per session |
+| Signal files | `.claude/logs/signals/` | Issues auto-detected for improvement |
+| Native logs | `~/.claude/projects/` | Full tool calls, tokens, conversations |
+
+### Claude Agent SDK Integration
+
+The plugin supports automated analysis via Claude Agent SDK:
+
+```bash
+# Headless analysis
+claude-code --print "Run /project:analyze-logs week all"
+
+# GitHub Actions integration for weekly analysis
+# See docs/self-improvement-protocol.md
+```
+
+### Pattern Detection
+
+Automatically detected and logged:
+- Uncommitted changes at session end
+- Lint errors
+- TODO accumulation
+- Large commits (may indicate missing incremental commits)
+- Hotspot files (frequently changed)
 
 ## Configuration
 

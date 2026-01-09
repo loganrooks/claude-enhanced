@@ -1,7 +1,7 @@
 ---
 description: Initialize autonomous development system with comprehensive codebase analysis
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, mcp__serena__*, mcp__sequential-thinking__*
-argument-hint: [mode: full|minimal|validate|reset]
+argument-hint: "[mode: full|minimal|validate|reset]"
 ---
 
 # Project Initialization: $ARGUMENTS

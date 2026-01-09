@@ -1,7 +1,7 @@
 ---
 description: Stop and reflect - capture correction with full context
 allowed-tools: Bash(mkdir:*), Bash(date:*), Write, Read, mcp__serena__*
-argument-hint: [optional: what went wrong]
+argument-hint: "[optional: what went wrong]"
 ---
 
 # Signal: $ARGUMENTS

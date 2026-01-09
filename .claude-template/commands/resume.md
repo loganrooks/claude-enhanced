@@ -1,7 +1,7 @@
 ---
 description: Resume session - restore context from previous work
 allowed-tools: Read, Glob, Grep, Bash(git:*), Bash(ls:*), mcp__serena__*
-argument-hint: [optional: specific-memory-name]
+argument-hint: "[optional: memory-name]"
 ---
 
 # Session Resume: $ARGUMENTS
